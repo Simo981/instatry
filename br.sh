@@ -1,5 +1,9 @@
 #!/bin/bash
-[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@";
+if [[ "$UID" != 0 ]]
+then
+echo "Run it with su or sudo ";
+exit 0;
+fi
 echo "Booting up Tor...";
 (tor 1>/dev/null) &
 sleep 10s;
@@ -36,7 +40,7 @@ rand=$(head /dev/urandom | base64 | tr -d '[:alpha:]' | tr -d '+/=' | tail -c 11
 fi
 if [[ $response == *'authenticated":true'* ]]; then
  echo "The Password is $line";
- return
+ exit 0;
 fi
 if [[ $response == *'authenticated":false'* ]]; 
 then
