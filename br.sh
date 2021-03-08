@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $(which tor) == "" ]]; then
+echo "Install tor, you need it";
+exit 0;
+fi
 if [[ "$UID" != 0 ]]
 then
 echo "Run it with su or sudo ";
