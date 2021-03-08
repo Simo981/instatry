@@ -7,13 +7,13 @@ Instagram Bruteforcer
 
 ___The usage is very simple. The only parameters are the username and a wordlist___
 
-` ` `
+```
 sudo ./br.sh <username> <wordlist>
-` ` `
+```
 
-` ` ` 
+``` 
 sudo ./br.sh myaccount wlist.txt 
-` ` `
+```
 
 # TODO
 Session Saver --
