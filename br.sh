@@ -8,6 +8,21 @@ then
 echo "Run it with su or sudo ";
 exit 0;
 fi
+if [[ $(ls "$1_$2" 2>/dev/null) ==  "$1_$2" ]];
+then
+echo "Existing Session Found";
+progressive=1;
+line_counter=$(sed '1q;d' "$1_$2" );
+sedline=$line_counter'q;d';
+line=$(sed $sedline "$2");
+else
+touch "$1_$2";
+echo "New Session";
+progressive=1;
+line_counter=1;
+sedline=$line_counter'q;d';
+line=$(sed $sedline "$2");
+fi
 echo "Booting up Tor...";
 killall tor &>/dev/null;
 (tor --SOCKSPort 9050 1>/dev/null) &
@@ -27,10 +42,6 @@ co='Connection: keep-alive';
 req='X-Requested-With: XMLHttpRequest';
 ig='X-IG-WWW-Claim: 0';
 size=$(cat "$2" | wc -l);
-progressive=1;
-line_counter=1;
-sedline=$line_counter'q;d';
-line=$(sed $sedline "$2");
 echo "Trying $line_counter of $size";
 while :
 if [[ "$line_counter" -gt "$size" ]]; then
@@ -46,6 +57,7 @@ if [[ $response == *'authenticated":true'* ]]; then
 fi
 if [[ $response == *'authenticated":false'* ]]; then
  line_counter=$((line_counter+1));
+ echo $line_counter > "$1_$2";
  sedline=$line_counter'q;d';
  line=$(sed $sedline "$2");
  progressive=$((progressive+1));
