@@ -25,7 +25,7 @@ line=$(sed $sedline "$2");
 fi
 echo "Booting up Tor...";
 killall tor &>/dev/null;
-(tor --SOCKSPort 9050 1>/dev/null) &
+(sudo -u \#$SUDO_UID tor --SOCKSPort 9050 1>/dev/null) &
 sleep 25s;
 echo "Ok...";
 token=$(head /dev/urandom | base64 | tr -d '[:digit:]' | tr -d '+/=' | tail -c 33);
