@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $(which curl) == "" ]]; then
+echo "Install curl, you need it";
+exit 0;
+fi
 if [[ $(which tor) == "" ]]; then
 echo "Install tor, you need it";
 exit 0;
