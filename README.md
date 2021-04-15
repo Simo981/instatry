@@ -1,6 +1,8 @@
 # Instatry
 Instagram Bruteforcer with session saver
-### Educational Purposes Only, I Don't Take Responsability For Any Other Use
+
+# Disclaimer
+### Educational purposes only, I don't take responsability for any other use
 
 # Dependencies
 ```
