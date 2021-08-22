@@ -59,6 +59,10 @@ if [[ $response == *'authenticated":true'* ]]; then
  echo "The Password is $line";
  exit 0;
 fi
+if [[ $response == *'checkpoint_required'* ]]; then
+ echo "The Password is $line";
+ exit 0;
+fi
 if [[ $response == *'authenticated":false'* ]]; then
  line_counter=$((line_counter+1));
  echo $line_counter > "$1_$2";
